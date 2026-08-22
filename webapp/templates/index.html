@@ -2,155 +2,118 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Uchiro Store — Roblox Accounts & Trades</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<title>Uchiro Store</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
 
-<nav class="nav">
-  <div class="nav-inner">
-    <a href="index.html" class="brand"><span class="mark">U</span> UCHIRO STORE</a>
-    <ul class="nav-links">
-      <li><a href="index.html" class="active">Home</a></li>
-      <li><a href="products.html">Products</a></li>
-      <li><a href="orders.html">Order history</a></li>
-      <li><a href="help.html">Help</a></li>
-    </ul>
-    <div class="nav-cta">
-      <a href="login.html" class="btn btn-ghost btn-sm">Login</a>
-      <a href="products.html" class="btn btn-amber btn-sm">Shop now</a>
-      <button class="menu-toggle">☰</button>
+<div id="app">
+
+  <div class="topbar">
+    <div class="brand"><span class="mark">U</span> Uchiro Store</div>
+    <div class="user"><span id="tg-user">–</span></div>
+  </div>
+
+  <!-- ===================== SHOP ===================== -->
+  <div id="screen-shop" class="screen">
+    <div class="mini-hero">
+      <div class="mini-aura"><div class="ring"></div><div class="ring"></div><div class="core"></div></div>
+      <div class="mini-hero-content">
+        <div class="eyebrow">14-DAY WARRANTY · AUTO-DELIVERY</div>
+        <h1>UCHIRO<br>STORE</h1>
+        <p>Blox Fruits, Evade & Rival accounts. MM2, Blade Ball & Gamepass trades — paid by KHQR, delivered in minutes.</p>
+      </div>
+    </div>
+
+    <div class="chip-row" id="chip-row"></div>
+    <div class="pgrid" id="product-grid"></div>
+  </div>
+
+  <!-- ===================== ORDERS ===================== -->
+  <div id="screen-orders" class="screen hidden">
+    <div class="eyebrow" style="justify-content:flex-start; margin-bottom:14px;">YOUR ORDERS</div>
+    <div id="orders-list"></div>
+  </div>
+
+  <!-- ===================== HELP ===================== -->
+  <div id="screen-help" class="screen hidden">
+    <div class="eyebrow" style="justify-content:flex-start; margin-bottom:14px;">HELP</div>
+
+    <div class="order-card">
+      <div style="font-weight:700; margin-bottom:8px;">Contact & channel</div>
+      <p class="muted" style="font-size:12.5px; margin-bottom:12px;">Fastest response is always Telegram.</p>
+      <a href="https://t.me/noreakyout" target="_blank" style="display:block; text-align:center; background:var(--amber); color:#1a1200; font-weight:600; padding:11px; border-radius:10px; font-size:13px; margin-bottom:8px;">Message admin</a>
+      <a href="https://t.me/uchirostore" target="_blank" style="display:block; text-align:center; background:var(--surface-2); border:1px solid var(--line); padding:11px; border-radius:10px; font-size:13px;">Join channel</a>
+    </div>
+
+    <div class="order-card">
+      <div style="font-weight:700; margin-bottom:10px;">Warranty policy</div>
+      <div class="row-between" style="margin-bottom:8px;"><span class="pill"><span class="status-dot status-live"></span>14 days</span><span class="muted" style="font-size:11.5px;">Standard, from delivery</span></div>
+      <div class="row-between" style="margin-bottom:8px;"><span class="pill"><span class="status-dot status-warn"></span>7 days</span><span class="muted" style="font-size:11.5px;">If authenticator removed</span></div>
+      <div class="row-between"><span class="pill"><span class="status-dot status-expired"></span>None</span><span class="muted" style="font-size:11.5px;">If email + codes all removed</span></div>
+    </div>
+
+    <div class="order-card">
+      <div style="font-weight:700; margin-bottom:8px;">Get your code</div>
+      <p class="muted" style="font-size:12.5px; line-height:1.6;">Open the Orders tab, copy the 6-digit code shown for your account, and paste it when Roblox asks for verification. It refreshes every 30 seconds — copy it right before you use it.</p>
     </div>
   </div>
-</nav>
 
-<header class="hero">
-  <div class="aura">
-    <div class="ring"></div><div class="ring"></div><div class="ring"></div>
-    <div class="core"></div>
+  <div class="tabbar">
+    <button class="tab-btn" data-tab="shop" onclick="switchTab('shop')"><span class="icon">🛍️</span>Shop</button>
+    <button class="tab-btn" data-tab="orders" onclick="switchTab('orders')"><span class="icon">🧾</span>Orders</button>
+    <button class="tab-btn" data-tab="help" onclick="switchTab('help')"><span class="icon">💬</span>Help</button>
   </div>
-  <div class="wrap hero-content">
-    <div class="eyebrow">14-DAY WARRANTY · INSTANT AUTO-DELIVERY</div>
-    <h1>UCHIRO<br>STORE</h1>
-    <p class="sub">Blox Fruits, Evade & Rival accounts. MM2, Blade Ball and Gamepass trades. Paid by KHQR, delivered in minutes, backed by a real storefront and a real person on Telegram.</p>
-    <div class="hero-cta">
-      <a href="products.html" class="btn btn-amber">Browse the store</a>
-      <a href="https://t.me/uchirostore" target="_blank" class="btn btn-ghost">Join Telegram channel</a>
-    </div>
-    <div class="hero-tags">
-      <span class="tag">Blox Fruits</span>
-      <span class="tag">Evade</span>
-      <span class="tag">Rival</span>
-      <span class="tag">MM2</span>
-      <span class="tag">Blade Ball</span>
-      <span class="tag">Gamepass</span>
-    </div>
-  </div>
-</header>
+</div>
 
-<section>
-  <div class="wrap">
-    <div class="section-head">
-      <div>
-        <div class="eyebrow">HOW IT WORKS</div>
-        <h2>From tap to inventory in minutes</h2>
-      </div>
-      <p>Every order — account or trade — moves through the same verified pipeline, whether you buy on the website or straight from the Telegram bot.</p>
+<!-- ===================== PRODUCT SHEET ===================== -->
+<div class="sheet-backdrop" id="backdrop" onclick="closeSheet()"></div>
+<div class="sheet" id="product-sheet">
+  <div class="sheet-handle"></div>
+  <div id="product-sheet-body"></div>
+</div>
+
+<!-- ===================== CHECKOUT SHEET ===================== -->
+<div class="sheet" id="checkout-sheet">
+  <div class="sheet-handle"></div>
+  <div id="checkout-pending">
+    <div class="eyebrow" style="justify-content:flex-start;">CHECKOUT</div>
+    <h2 style="margin:10px 0 4px; font-size:16px;" id="checkout-item-name"></h2>
+    <div class="row-between muted" style="font-size:12px;">
+      <span>Ref: <span class="mono" id="checkout-ref"></span></span>
+      <span>Expires in <span class="mono" id="checkout-timer">10:00</span></span>
     </div>
-    <div class="grid grid-4">
-      <div class="panel panel-sm">
-        <div class="mono muted" style="font-size:12px;">STEP 1</div>
-        <h3 style="text-transform:none; font-size:16px; margin:10px 0 8px;">Pick your item</h3>
-        <p class="muted" style="font-size:13px;">Choose an account bundle or a trade item from the catalog.</p>
+    <div class="bar" style="margin-top:8px;"><div class="bar-fill" id="checkout-bar" style="width:100%;"></div></div>
+
+    <div class="field" style="margin-top:16px;">
+      <label>Coupon code</label>
+      <div style="display:flex; gap:8px;">
+        <input type="text" id="coupon-input" placeholder="e.g. UCHIRO10" style="flex:1; text-transform:uppercase;">
+        <button onclick="applyCoupon()" style="background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:0 16px; font-size:13px;">Apply</button>
       </div>
-      <div class="panel panel-sm">
-        <div class="mono muted" style="font-size:12px;">STEP 2</div>
-        <h3 style="text-transform:none; font-size:16px; margin:10px 0 8px;">Pay by KHQR</h3>
-        <p class="muted" style="font-size:13px;">Scan the QR at checkout — confirmation is automatic, no manual approval needed for most orders.</p>
-      </div>
-      <div class="panel panel-sm">
-        <div class="mono muted" style="font-size:12px;">STEP 3</div>
-        <h3 style="text-transform:none; font-size:16px; margin:10px 0 8px;">Auto-delivery</h3>
-        <p class="muted" style="font-size:13px;">Login, password, and authenticator code land in your order history — and in the Telegram bot chat if you bought there.</p>
-      </div>
-      <div class="panel panel-sm">
-        <div class="mono muted" style="font-size:12px;">STEP 4</div>
-        <h3 style="text-transform:none; font-size:16px; margin:10px 0 8px;">Warranty window</h3>
-        <p class="muted" style="font-size:13px;">14 days on all accounts, counted live from delivery. Full terms on the Help page.</p>
-      </div>
+      <div id="coupon-msg" class="mono" style="font-size:11px; margin-top:6px;"></div>
+    </div>
+
+    <div class="qr-box"><div class="qr-inner">KHQR CODE<br>(generated by your KHQR API)</div></div>
+    <div class="row-between" style="font-size:16px; font-weight:700;">
+      <span>Total</span><span class="mono" id="checkout-total">$0</span>
+    </div>
+    <div class="toast-banner" style="margin-top:14px;">
+      <span>ℹ️</span><div>Payment normally confirms automatically. Tap the button below to simulate that for this preview.</div>
     </div>
   </div>
-</section>
 
-<section id="account">
-  <div class="wrap">
-    <div class="section-head">
-      <div>
-        <div class="eyebrow">ACCOUNT BUNDLES</div>
-        <h2>Blox Fruits + Evade + Rival</h2>
-      </div>
-      <a href="products.html#account" class="btn btn-ghost btn-sm">View all accounts</a>
-    </div>
-    <div class="grid grid-3" id="featured-accounts"></div>
+  <div id="checkout-success" class="hidden">
+    <div class="eyebrow" style="justify-content:flex-start;">✅ PAYMENT CONFIRMED</div>
+    <p class="muted mt-8" style="font-size:13px; margin:10px 0 16px;">Delivering your item now — this normally takes under 10 minutes.</p>
+    <button onclick="finishCheckout()" style="width:100%; background:var(--amber); color:#1a1200; font-weight:600; padding:13px; border-radius:12px; border:0; font-size:14px;">View in Orders</button>
   </div>
-</section>
+</div>
 
-<section id="trade">
-  <div class="wrap">
-    <div class="section-head">
-      <div>
-        <div class="eyebrow">TRADE ITEMS</div>
-        <h2>MM2 · Blade Ball · Gamepass / Fruit</h2>
-      </div>
-      <a href="products.html#trade" class="btn btn-ghost btn-sm">View all trades</a>
-    </div>
-    <div class="grid grid-3" id="featured-trades"></div>
-  </div>
-</section>
-
-<section>
-  <div class="wrap">
-    <div class="panel" style="display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; background:linear-gradient(120deg, var(--surface), var(--surface-2));">
-      <div>
-        <div class="eyebrow">STOREFRONT</div>
-        <h2 style="font-size:26px; margin-top:8px;">Not just a bot — a real storefront</h2>
-        <p class="muted mt-8" style="max-width:520px;">We operate a physical storefront with public photos and a verified Telegram presence. Walk-in trades available by appointment.</p>
-      </div>
-      <div class="flex gap-12" style="flex-wrap:wrap;">
-        <a href="https://t.me/uchirostore" target="_blank" class="btn btn-amber">Telegram channel</a>
-        <a href="https://t.me/noreakyout" target="_blank" class="btn btn-ghost">Message admin</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<footer data-footer></footer>
-
-<script src="assets/data.js"></script>
-<script src="assets/app.js"></script>
-<script>
-function cardHTML(p){
-  const badge = p.kind === 'account' ? `<span class="badge badge-account">Account · ${p.warranty_days}d warranty</span>` : `<span class="badge badge-trade">Trade</span>`;
-  const stock = p.kind === 'account' ? '' : `<span class="badge-stock">${p.stock} in stock</span>`;
-  return `
-  <div class="card">
-    <div class="card-media">${badge}${stock}${p.category}</div>
-    <div class="card-body">
-      <h3>${p.name}</h3>
-      <div class="desc">${p.desc}</div>
-      <div class="pill-row">${p.tags.map(t=>`<span class="pill">${t}</span>`).join('')}</div>
-      <div class="card-foot">
-        <div class="price">$${p.price}<small> USD</small></div>
-        <a href="checkout.html?item=${p.id}" class="btn btn-amber btn-sm">Buy now</a>
-      </div>
-    </div>
-  </div>`;
-}
-document.getElementById('featured-accounts').innerHTML = CATALOG.filter(p=>p.kind==='account').map(cardHTML).join('');
-document.getElementById('featured-trades').innerHTML = CATALOG.filter(p=>p.kind==='trade').map(cardHTML).join('');
-</script>
+<script src="../assets/data.js"></script>
+<script src="../assets/app.js"></script>
 </body>
 </html>
