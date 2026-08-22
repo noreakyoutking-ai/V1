@@ -1,0 +1,144 @@
+/* ============================================================
+   UCHIRO STORE — Telegram Mini App styles
+   Colors default to our brand palette but are overridden live by
+   Telegram's theme params (see applyTelegramTheme() in app.js) so
+   the app matches the user's Telegram light/dark theme.
+   ============================================================ */
+:root{
+  --void:      #0a0b0e;
+  --surface:   #14161d;
+  --surface-2: #1c1f29;
+  --surface-3: #262a37;
+  --line:      #2a2e3a;
+  --ivory:     #f4f0e4;
+  --amber:     #ffb230;
+  --ember:     #ff5c5c;
+  --mint:      #3ecf8e;
+  --slate:     #8b90a0;
+  --slate-dim: #5b606f;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --font-display:'Anton','Arial Narrow',sans-serif;
+  --font-body:'Inter',-apple-system,sans-serif;
+  --font-mono:'JetBrains Mono','Courier New',monospace;
+}
+*{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{
+  background:var(--void); color:var(--ivory); font-family:var(--font-body);
+  overscroll-behavior-y:contain; -webkit-font-smoothing:antialiased;
+}
+a{color:inherit; text-decoration:none;} img{max-width:100%; display:block;} ul{list-style:none;}
+button, input, select, textarea{font-family:inherit; color:inherit;}
+
+#app{display:flex; flex-direction:column; height:100vh; height:100dvh;}
+
+/* ---------- top bar ---------- */
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 16px; border-bottom:1px solid var(--line); flex-shrink:0;
+}
+.topbar .brand{display:flex; align-items:center; gap:8px; font-family:var(--font-display); font-size:17px; letter-spacing:.02em;}
+.topbar .mark{
+  width:28px;height:28px;border-radius:8px;
+  background:conic-gradient(from 180deg, var(--amber), var(--ember), var(--amber));
+  display:flex;align-items:center;justify-content:center; color:var(--void); font-size:13px; font-family:var(--font-display);
+}
+.topbar .user{font-size:11px; color:var(--slate); font-family:var(--font-mono); display:flex; align-items:center; gap:6px;}
+.lang-toggle{background:var(--surface-2); border:1px solid var(--line); border-radius:999px; padding:4px 10px; font-size:11px; color:var(--slate); font-family:var(--font-mono); cursor:pointer;}
+
+/* ---------- scroll content ---------- */
+.screen{flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:16px 16px calc(90px + var(--safe-bottom));}
+.screen.hidden{display:none;}
+
+/* ---------- hero (compact, mini-app scaled) ---------- */
+.mini-hero{position:relative; text-align:center; padding:22px 0 18px; overflow:hidden;}
+.mini-aura{position:absolute; top:50%; left:50%; width:340px; height:340px; transform:translate(-50%,-50%); pointer-events:none;}
+.mini-aura .ring{position:absolute; inset:0; border-radius:50%; border:1px solid rgba(244,240,228,.14); animation:mpulse 4s ease-out infinite;}
+.mini-aura .ring:nth-child(2){animation-delay:1s;}
+.mini-aura .core{position:absolute; top:50%; left:50%; width:150px; height:150px; border-radius:50%; transform:translate(-50%,-50%);
+  background:radial-gradient(circle, rgba(255,178,48,.4), rgba(255,178,48,0) 70%); filter:blur(4px); animation:mbreathe 3.2s ease-in-out infinite;}
+@keyframes mpulse{0%{transform:scale(.3); opacity:0;} 15%{opacity:.9;} 100%{transform:scale(1); opacity:0;}}
+@keyframes mbreathe{0%,100%{opacity:.6; transform:translate(-50%,-50%) scale(.9);} 50%{opacity:1; transform:translate(-50%,-50%) scale(1.08);}}
+.mini-hero-content{position:relative; z-index:1;}
+.mini-hero h1{font-family:var(--font-display); font-size:32px; letter-spacing:.01em; line-height:.95;}
+.mini-hero p{color:var(--slate); font-size:12.5px; margin-top:8px; max-width:260px; margin-left:auto; margin-right:auto;}
+.eyebrow{font-family:var(--font-mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--amber); display:flex; align-items:center; justify-content:center; gap:6px;}
+.eyebrow::before{content:""; width:5px; height:5px; border-radius:50%; background:var(--amber); box-shadow:0 0 6px var(--amber);}
+
+/* ---------- category chips ---------- */
+.chip-row{display:flex; gap:8px; overflow-x:auto; padding:2px 0 14px; -ms-overflow-style:none; scrollbar-width:none;}
+.chip-row::-webkit-scrollbar{display:none;}
+.chip{flex-shrink:0; font-family:var(--font-mono); font-size:12px; padding:8px 14px; border-radius:999px; background:var(--surface-2); border:1px solid var(--line); color:var(--slate); white-space:nowrap;}
+.chip.active{background:var(--amber); color:#1a1200; border-color:var(--amber); font-weight:600;}
+
+/* ---------- product cards ---------- */
+.pgrid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+.pcard{background:var(--surface); border:1px solid var(--line); border-radius:14px; overflow:hidden; transform:translateZ(0); transition:transform .15s;}
+.pcard:active{transform:scale(.97);}
+.pcard-media{aspect-ratio:1/1; position:relative; display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:11px; color:var(--slate-dim); text-align:center; padding:8px;
+  background:radial-gradient(circle at 30% 20%, rgba(255,178,48,.18), transparent 55%), linear-gradient(150deg, var(--surface-2), var(--surface-3));}
+.pcard .badge{position:absolute; top:8px; left:8px; font-family:var(--font-mono); font-size:9.5px; padding:3px 8px; border-radius:999px;}
+.badge-account{background:rgba(255,178,48,.18); color:var(--amber);}
+.badge-trade{background:rgba(62,207,142,.18); color:var(--mint);}
+.pcard-body{padding:10px 12px 12px;}
+.pcard-body h3{font-size:12.5px; font-weight:600; line-height:1.3; margin-bottom:6px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+.pcard-foot{display:flex; align-items:center; justify-content:space-between;}
+.pcard .price{font-family:var(--font-mono); font-size:14px; font-weight:700;}
+.pcard .stock{font-size:10px; color:var(--slate-dim); font-family:var(--font-mono);}
+
+/* ---------- bottom sheet (product detail / checkout) ---------- */
+.sheet-backdrop{position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:40; opacity:0; pointer-events:none; transition:opacity .2s;}
+.sheet-backdrop.open{opacity:1; pointer-events:auto;}
+.sheet{position:fixed; left:0; right:0; bottom:0; z-index:41; background:var(--surface); border-radius:20px 20px 0 0; border-top:1px solid var(--line);
+  max-height:88vh; overflow-y:auto; transform:translateY(100%); transition:transform .25s ease; padding:18px 18px calc(24px + var(--safe-bottom));}
+.sheet.open{transform:translateY(0);}
+.sheet-handle{width:36px; height:4px; background:var(--slate-dim); border-radius:99px; margin:0 auto 16px;}
+.sheet-media{aspect-ratio:16/9; border-radius:12px; background:linear-gradient(150deg, var(--surface-2), var(--surface-3)); margin-bottom:14px; display:flex; align-items:center; justify-content:center; font-family:var(--font-display); color:var(--slate-dim); font-size:13px;}
+.sheet h2{font-size:17px; font-weight:700; margin-bottom:6px;}
+.sheet .desc{color:var(--slate); font-size:13px; line-height:1.5; margin-bottom:12px;}
+.tag-row{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;}
+.tag{font-size:10.5px; font-family:var(--font-mono); color:var(--slate); border:1px solid var(--line); padding:3px 8px; border-radius:6px;}
+
+/* ---------- form fields (reused in checkout/coupon/admin) ---------- */
+.field{margin-bottom:12px;}
+.field label{display:block; font-size:11px; color:var(--slate); margin-bottom:6px; font-family:var(--font-mono);}
+.field input, .field select, .field textarea{width:100%; background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:11px 13px; font-size:14px; outline:none;}
+.field input:focus{border-color:var(--amber);}
+
+.row-between{display:flex; align-items:center; justify-content:space-between;}
+.divider{height:1px; background:var(--line); margin:14px 0;}
+.mono{font-family:var(--font-mono);}
+.muted{color:var(--slate);}
+.pill{font-size:10.5px; font-family:var(--font-mono); color:var(--slate); border:1px solid var(--line); padding:3px 9px; border-radius:999px; display:inline-flex; align-items:center; gap:5px;}
+.status-dot{width:6px;height:6px;border-radius:50%; display:inline-block;}
+.status-live{background:var(--mint); box-shadow:0 0 6px var(--mint);}
+.status-warn{background:var(--amber); box-shadow:0 0 6px var(--amber);}
+.status-expired{background:var(--ember); box-shadow:0 0 6px var(--ember);}
+
+/* ---------- bottom tab bar ---------- */
+.tabbar{
+  position:fixed; left:0; right:0; bottom:0; z-index:30;
+  display:flex; background:rgba(20,22,29,.92); backdrop-filter:blur(16px); border-top:1px solid var(--line);
+  padding:8px 6px calc(8px + var(--safe-bottom));
+}
+.tab-btn{flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; background:none; border:0; padding:6px 0; color:var(--slate-dim); font-size:10.5px; font-family:var(--font-mono);}
+.tab-btn .icon{font-size:18px;}
+.tab-btn.active{color:var(--amber);}
+
+/* ---------- KHQR checkout view ---------- */
+.qr-box{width:180px; height:180px; margin:16px auto; border-radius:14px; background:repeating-linear-gradient(45deg, var(--surface-3) 0 8px, var(--surface-2) 8px 16px); display:flex; align-items:center; justify-content:center; border:1px solid var(--line);}
+.qr-box .qr-inner{width:120px;height:120px;background:var(--ivory); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#111; font-family:var(--font-mono); font-size:10px; text-align:center; padding:8px;}
+.bar{height:4px; background:var(--surface-3); border-radius:99px; overflow:hidden;}
+.bar-fill{height:100%; background:var(--amber);}
+
+/* ---------- toast ---------- */
+.toast-banner{background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:11px 14px; font-size:12.5px; color:var(--slate); display:flex; gap:8px; align-items:flex-start;}
+.toast-banner strong{color:var(--ivory);}
+
+/* ---------- order card ---------- */
+.order-card{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:14px; margin-bottom:12px;}
+.code-box{background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:11px 13px; display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:8px;}
+.code-box .code{font-family:var(--font-mono); font-size:19px; letter-spacing:.08em; color:var(--amber);}
+.copy-btn{background:var(--surface-3); border:1px solid var(--line); color:var(--slate); border-radius:7px; padding:6px 9px; font-size:10.5px;}
+
+.empty-state{text-align:center; padding:60px 20px; color:var(--slate);}
