@@ -10,7 +10,7 @@ import database as db
 from config import (ADMIN_BOT_TOKEN, STORE_BOT_TOKEN, 
                     CATEGORIES, CURRENCY, CREATOR_NAME, CREATOR_YOUTUBE)
 from utils import (format_price, save_telegram_photo, warranty_status, 
-                    get_totp_code, parse_account_credentials)
+                    get_totp_code)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 DB_PATH = "store.db"
 
 # ---------------------------------------------------------
-# DATABASE & TRACKING HELPERS (from admin additions)
+# DATABASE & TRACKING HELPERS
 # ---------------------------------------------------------
 
 def ensure_tables():
@@ -290,7 +290,7 @@ async def on_error(update, context: ContextTypes.DEFAULT_TYPE):
     logger.error("Admin bot error", exc_info=context.error)
 
 # ---------------------------------------------------------
-# APPLICATION BUILDER (Required by main.py)
+# APPLICATION BUILDER
 # ---------------------------------------------------------
 
 def build_app():
