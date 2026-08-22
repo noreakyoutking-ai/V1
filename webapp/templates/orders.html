@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Order History — Uchiro Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+.order-card{padding:22px;}
+.code-box{
+  background:var(--surface-2); border:1px solid var(--line); border-radius:var(--radius-sm);
+  padding:16px; display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:12px;
+}
+.code-box .code{font-family:var(--font-mono); font-size:26px; letter-spacing:.1em; color:var(--amber);}
+.bar{height:3px; background:var(--surface-3); border-radius:99px; overflow:hidden; margin-top:10px;}
+.bar-fill{height:100%; background:var(--amber); width:100%;}
+.copy-btn{background:var(--surface-3); border:1px solid var(--line); color:var(--slate); border-radius:8px; padding:6px 10px; font-size:11px; cursor:pointer;}
+.copy-btn:hover{color:var(--ivory); border-color:var(--amber);}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand"><span class="mark">U</span> UCHIRO STORE</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="orders.html" class="active">Order history</a></li>
+      <li><a href="help.html">Help</a></li>
+    </ul>
+    <div class="nav-cta"><button class="menu-toggle">☰</button></div>
+  </div>
+</nav>
+
+<header style="padding:48px 0 10px;">
+  <div class="wrap">
+    <div class="eyebrow">YOUR ACCOUNT</div>
+    <h1 style="font-size:clamp(30px,4vw,44px); margin-top:10px;">Order history</h1>
+    <p class="muted mt-8">Credentials and live authenticator codes for every account you've purchased, plus a running warranty clock.</p>
+  </div>
+</header>
+
+<section style="padding-top:20px;" id="orders-list"></section>
+
+<footer data-footer></footer>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+const list = document.getElementById('orders-list');
+const intervals = [];
+
+function warrantyBadge(order){
+  if(order.kind !== 'account') return `<span class="pill">Trade — no warranty</span>`;
+  const cd = warrantyCountdown(order.purchased_at, order.warranty_days);
+  const dotClass = cd.expired ? 'status-expired' : (cd.days <= 2 ? 'status-warn' : 'status-live');
+  return `<span class="pill"><span class="status-dot ${dotClass}"></span>${cd.text}</span>`;
+}
+
+function orderCard(order){
+  const date = new Date(order.purchased_at).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});
+  let deliveryHTML = '';
+  if(order.delivery){
+    deliveryHTML = `
+      <div class="divider"></div>
+      <div class="grid" style="grid-template-columns:1fr 1fr; gap:12px;">
+        <div class="field" style="margin-bottom:0;">
+          <label>Login</label>
+          <div class="code-box" style="padding:10px 14px;">
+            <span class="mono" style="font-size:14px;">${order.delivery.login}</span>
+            <button class="copy-btn" onclick="navigator.clipboard.writeText('${order.delivery.login}')">Copy</button>
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label>Password</label>
+          <div class="code-box" style="padding:10px 14px;">
+            <span class="mono" style="font-size:14px;">${order.delivery.password}</span>
+            <button class="copy-btn" onclick="navigator.clipboard.writeText('${order.delivery.password}')">Copy</button>
+          </div>
+        </div>
+      </div>
+      <div class="field mt-16" style="margin-bottom:0;">
+        <label>Live authenticator code · refreshes every 30s</label>
+        <div class="code-box" id="auth-${order.id}">
+          <div>
+            <span class="code">000 000</span>
+            <div class="bar"><div class="bar-fill"></div></div>
+          </div>
+          <button class="copy-btn" onclick="copyCode('${order.id}')">Copy code</button>
+        </div>
+      </div>
+      <p class="muted mt-8" style="font-size:12px;">Recovery email on file: <span class="mono">${order.delivery.email}</span></p>
+    `;
+  }
+  return `
+  <div class="panel order-card mt-16">
+    <div class="flex between" style="flex-wrap:wrap; gap:12px;">
+      <div>
+        <div class="mono muted" style="font-size:12px;">${order.id} · ${date}</div>
+        <h3 style="text-transform:none; font-size:17px; margin-top:6px;">${order.item_name}</h3>
+      </div>
+      <div style="text-align:right;">
+        <div class="price">$${order.price}</div>
+        ${warrantyBadge(order)}
+      </div>
+    </div>
+    ${deliveryHTML}
+  </div>`;
+}
+
+function copyCode(orderId){
+  const el = document.querySelector(`#auth-${orderId} .code`);
+  if(el) navigator.clipboard.writeText(el.textContent.replace(' ',''));
+}
+
+if(ORDERS.length === 0){
+  list.innerHTML = `<div class="wrap"><div class="panel" style="text-align:center; color:var(--slate);">No orders yet. <a href="products.html" style="color:var(--amber);">Browse the store</a> to make your first purchase.</div></div>`;
+} else {
+  list.innerHTML = `<div class="wrap">${ORDERS.map(orderCard).join('')}</div>`;
+  ORDERS.forEach(order=>{
+    if(order.delivery){
+      const el = document.getElementById(`auth-${order.id}`);
+      intervals.push(startDemoAuthCode(el, order.delivery.auth_secret_demo));
+    }
+  });
+}
+</script>
+</body>
+</html>

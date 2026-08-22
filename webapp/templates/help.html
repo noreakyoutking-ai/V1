@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Help — Uchiro Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+.help-nav{position:sticky; top:80px; align-self:start;}
+.help-nav a{display:block; padding:9px 0; color:var(--slate); font-size:14px; border-left:2px solid transparent; padding-left:14px; transition:.2s;}
+.help-nav a:hover, .help-nav a.active{color:var(--ivory); border-color:var(--amber);}
+.warranty-row{display:grid; grid-template-columns:140px 1fr; gap:16px; padding:16px 0; border-bottom:1px solid var(--line);}
+.warranty-row:last-child{border-bottom:none;}
+.faq details{border-bottom:1px solid var(--line); padding:16px 0;}
+.faq summary{cursor:pointer; font-weight:600; list-style:none; display:flex; justify-content:space-between;}
+.faq summary::-webkit-details-marker{display:none;}
+.faq summary::after{content:"+"; color:var(--amber); font-family:var(--font-mono);}
+.faq details[open] summary::after{content:"−";}
+.faq p{color:var(--slate); font-size:14px; margin-top:10px; line-height:1.6;}
+.player{display:flex; align-items:center; gap:14px; padding:16px; background:var(--surface-2); border-radius:var(--radius-sm); border:1px solid var(--line);}
+.player button{width:40px;height:40px;border-radius:50%;background:var(--amber); border:0; color:#1a1200; font-size:16px; cursor:pointer;}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand"><span class="mark">U</span> UCHIRO STORE</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="orders.html">Order history</a></li>
+      <li><a href="help.html" class="active">Help</a></li>
+    </ul>
+    <div class="nav-cta"><button class="menu-toggle">☰</button></div>
+  </div>
+</nav>
+
+<header style="padding:48px 0 10px;">
+  <div class="wrap">
+    <div class="eyebrow">HELP CENTER</div>
+    <h1 style="font-size:clamp(30px,4vw,44px); margin-top:10px;">Everything you need to know</h1>
+  </div>
+</header>
+
+<section style="padding-top:20px;">
+  <div class="wrap" style="display:grid; grid-template-columns:200px 1fr; gap:40px;">
+
+    <nav class="help-nav">
+      <a href="#contact">Contact & channel</a>
+      <a href="#relax">Relax radio</a>
+      <a href="#warranty">Warranty policy</a>
+      <a href="#authenticator">Authenticator setup</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+
+    <div>
+      <div class="panel" id="contact">
+        <div class="eyebrow">CONTACT & CHANNEL</div>
+        <p class="muted mt-16">Fastest response is always Telegram. The channel posts new stock, restocks, and any service updates.</p>
+        <div class="grid grid-3 mt-16" style="grid-template-columns:1fr 1fr;">
+          <a href="https://t.me/noreakyout" target="_blank" class="btn btn-amber">Message the admin</a>
+          <a href="https://t.me/uchirostore" target="_blank" class="btn btn-ghost">Join the channel</a>
+        </div>
+      </div>
+
+      <div class="panel mt-24" id="relax">
+        <div class="eyebrow">RELAX RADIO</div>
+        <p class="muted mt-16" style="margin-bottom:16px;">Waiting on delivery or just farming Blox Fruits? Loop some lo-fi while you wait.</p>
+        <div class="player">
+          <button id="play-btn">▶</button>
+          <div style="flex:1;">
+            <div style="font-size:13px; font-weight:600;">Uchiro Lo-Fi Mix</div>
+            <div class="bar" style="margin-top:8px;"><div class="bar-fill" id="music-bar" style="width:0%; transition:width .3s;"></div></div>
+          </div>
+        </div>
+        <p class="muted mt-8" style="font-size:11px;">Drop an mp3 at <span class="mono">assets/music.mp3</span> and wire it to an &lt;audio&gt; tag to make this play for real.</p>
+      </div>
+
+      <div class="panel mt-24" id="warranty">
+        <div class="eyebrow">WARRANTY POLICY</div>
+        <div class="mt-16">
+          <div class="warranty-row">
+            <div class="mono" style="color:var(--mint);">14 days</div>
+            <div class="muted" style="font-size:14px;">Standard warranty on every account, starting the moment it's delivered. Covers the account being taken back, banned through no fault of yours, or login info stopping working.</div>
+          </div>
+          <div class="warranty-row">
+            <div class="mono" style="color:var(--amber);">7 days</div>
+            <div class="muted" style="font-size:14px;">If the authenticator app is removed from the account after delivery, warranty drops to 7 days from purchase — removing 2FA weakens the account's protection.</div>
+          </div>
+          <div class="warranty-row">
+            <div class="mono" style="color:var(--ember);">No warranty</div>
+            <div class="muted" style="font-size:14px;">If all authenticator backup codes and the recovery email are changed or removed, the account is no longer covered — we can no longer verify or recover it.</div>
+          </div>
+        </div>
+        <div class="toast-banner mt-16">
+          <span>⚠️</span>
+          <div>Trade items (MM2, Blade Ball, Gamepass/Fruit) are delivered instantly and are <strong>not covered by warranty</strong> — check the item on arrival.</div>
+        </div>
+      </div>
+
+      <div class="panel mt-24" id="authenticator">
+        <div class="eyebrow">HOW TO GET YOUR CODE & INSTALL THE APP</div>
+        <ol class="mt-16" style="padding-left:20px; color:var(--slate); font-size:14px; line-height:2.1;">
+          <li>Install <strong>Google Authenticator</strong> or <strong>Authy</strong> from your phone's app store.</li>
+          <li>Open your <a href="orders.html" style="color:var(--amber);">order history</a> and copy the login code shown for your account — this refreshes every 30 seconds, so copy it right before you use it.</li>
+          <li>When Roblox asks for a verification code at login, paste the current code shown on your order page.</li>
+          <li><strong>Do not delete or transfer</strong> the authenticator entry off our systems — doing so reduces your warranty to 7 days (see policy above).</li>
+          <li>Still stuck? Message the admin directly — screen-share support is available for first-time buyers.</li>
+        </ol>
+      </div>
+
+      <div class="panel mt-24 faq" id="faq">
+        <div class="eyebrow">FAQ</div>
+        <div class="mt-16">
+          <details open>
+            <summary>How fast is delivery?</summary>
+            <p>Most orders — account or trade — auto-deliver within 10 minutes of payment confirming on KHQR.</p>
+          </details>
+          <details>
+            <summary>Can I buy from Telegram instead of the website?</summary>
+            <p>Yes. Open the Store Bot, pick your item, and pay the same way. Orders placed in Telegram show up in the bot's own order history rather than the website's — they use separate accounts.</p>
+          </details>
+          <details>
+            <summary>Do I need an account to buy on the website?</summary>
+            <p>Yes — create one with a name, email, and password so we can attach your order history and let you reset your password if needed.</p>
+          </details>
+          <details>
+            <summary>What happens if I lose my password?</summary>
+            <p>Use "Forgot password" on the login page — we'll email a reset code to the address on your account.</p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer data-footer></footer>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+let playing = false;
+let musicInt;
+document.getElementById('play-btn').addEventListener('click', function(){
+  playing = !playing;
+  this.textContent = playing ? '❚❚' : '▶';
+  let w = 0;
+  clearInterval(musicInt);
+  if(playing){
+    musicInt = setInterval(()=>{
+      w = (w+1) % 100;
+      document.getElementById('music-bar').style.width = w+'%';
+    }, 300);
+  }
+});
+</script>
+</body>
+</html>

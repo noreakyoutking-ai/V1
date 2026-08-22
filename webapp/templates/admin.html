@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Uchiro Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+body{display:flex;}
+.sidebar{
+  width:230px; flex-shrink:0; min-height:100vh; background:var(--surface); border-right:1px solid var(--line);
+  padding:24px 18px; position:sticky; top:0; height:100vh;
+}
+.sidebar .brand{margin-bottom:36px; font-size:16px;}
+.sidebar a{display:flex; align-items:center; gap:10px; padding:11px 12px; border-radius:9px; color:var(--slate); font-size:14px; margin-bottom:4px; transition:.15s;}
+.sidebar a:hover{background:var(--surface-2); color:var(--ivory);}
+.sidebar a.active{background:var(--surface-2); color:var(--amber);}
+.main{flex:1; min-width:0;}
+.topbar{
+  padding:18px 32px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;
+  position:sticky; top:0; background:var(--void); z-index:10;
+}
+.content{padding:28px 32px 60px;}
+.stat-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
+@media (max-width:900px){.stat-grid{grid-template-columns:repeat(2,1fr);}}
+.stat-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:20px;}
+.stat-card .num{font-family:var(--font-display); font-size:30px; margin-top:8px;}
+.admin-view{display:none;}
+.admin-view.active{display:block;}
+table{width:100%; border-collapse:collapse; font-size:13px;}
+th{text-align:left; color:var(--slate); font-family:var(--font-mono); font-weight:400; font-size:11px; letter-spacing:.05em; text-transform:uppercase; padding:10px 14px; border-bottom:1px solid var(--line);}
+td{padding:12px 14px; border-bottom:1px solid var(--line); vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+.status-chip{font-family:var(--font-mono); font-size:11px; padding:3px 10px; border-radius:999px;}
+.chip-pending{background:rgba(255,178,48,.15); color:var(--amber);}
+.chip-approved{background:rgba(62,207,142,.15); color:var(--mint);}
+.chip-out{background:rgba(255,92,92,.15); color:var(--ember);}
+.icon-btn{background:var(--surface-2); border:1px solid var(--line); color:var(--slate); border-radius:7px; padding:6px 11px; font-size:12px; cursor:pointer;}
+.icon-btn:hover{color:var(--ivory); border-color:var(--amber);}
+.bar{height:5px; background:var(--surface-3); border-radius:99px; overflow:hidden;}
+.bar-fill{height:100%; background:var(--amber);}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand"><span class="mark">U</span> ADMIN</div>
+  <a href="#" class="side-link active" data-view="dashboard-view">📊 Dashboard</a>
+  <a href="#" class="side-link" data-view="products-view">📦 Products</a>
+  <a href="#" class="side-link" data-view="orders-view">🧾 Orders</a>
+  <a href="#" class="side-link" data-view="add-view">➕ Add product</a>
+  <a href="#" class="side-link" data-view="coupons-view">🏷️ Coupons</a>
+  <a href="#" class="side-link" data-view="visitors-view">👁 Visitors</a>
+  <a href="#" class="side-link" data-view="broadcast-view">📢 Broadcast</a>
+  <a href="#" class="side-link" data-view="settings-view">⚙️ Bot & payment</a>
+  <div class="divider"></div>
+  <a href="index.html">↩ Back to storefront</a>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div class="mono" style="font-size:13px;" id="view-title">Dashboard</div>
+    <div class="flex gap-12 center">
+      <span class="muted mono" style="font-size:12px;"><span class="status-dot status-live"></span>Store bot online</span>
+      <span class="muted mono" style="font-size:12px;"><span class="status-dot status-live"></span>Admin bot online</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div id="dashboard-view" class="admin-view active">
+      <div class="stat-grid">
+        <div class="stat-card"><div class="muted" style="font-size:12px;">Orders today</div><div class="num">7</div></div>
+        <div class="stat-card"><div class="muted" style="font-size:12px;">Revenue today</div><div class="num">$186</div></div>
+        <div class="stat-card"><div class="muted" style="font-size:12px;">Accounts in stock</div><div class="num" id="stat-accounts">-</div></div>
+        <div class="stat-card"><div class="muted" style="font-size:12px;">Trade items low stock</div><div class="num" style="color:var(--ember);">2</div></div>
+      </div>
+      <div class="panel mt-24">
+        <div class="eyebrow">RECENT ACTIVITY</div>
+        <p class="muted mt-16" style="font-size:13px;">Order UCH-88213 auto-approved and delivered · Order UCH-88190 paid via KHQR, awaiting stock deduction · Stock alert: "Chroma Seer" below 15 units.</p>
+      </div>
+    </div>
+
+    <div id="products-view" class="admin-view">
+      <div class="flex between" style="flex-wrap:wrap; gap:12px;">
+        <div class="eyebrow">PRODUCTS</div>
+        <div class="flex gap-8">
+          <button class="btn btn-ghost btn-sm" id="release-all">Release all pending stock</button>
+          <button class="btn btn-amber btn-sm" onclick="switchView('add-view')">+ Add product</button>
+        </div>
+      </div>
+      <div class="panel mt-16" style="padding:0;">
+        <table>
+          <thead><tr><th>Item</th><th>Category</th><th>Type</th><th>Price</th><th>Stock</th><th></th></tr></thead>
+          <tbody id="products-table"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="orders-view" class="admin-view">
+      <div class="eyebrow">ORDERS</div>
+      <div class="panel mt-16" style="padding:0;">
+        <table>
+          <thead><tr><th>Order</th><th>Item</th><th>Buyer</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+          <tbody>
+            <tr><td class="mono">UCH-88213</td><td>Full Bundle Account — Dragon Awakened</td><td>@player_921</td><td>$42</td><td><span class="status-chip chip-approved">Delivered</span></td><td><button class="icon-btn">View</button></td></tr>
+            <tr><td class="mono">UCH-88214</td><td>Chroma Seer (MM2)</td><td>Website: j.doe@mail.com</td><td>$6</td><td><span class="status-chip chip-pending">Awaiting KHQR</span></td><td><button class="icon-btn">Approve</button></td></tr>
+            <tr><td class="mono">UCH-88215</td><td>Dragon Fruit (Physical)</td><td>@fruitfan22</td><td>$14</td><td><span class="status-chip chip-out">Out of stock</span></td><td><button class="icon-btn">Restock</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="add-view" class="admin-view">
+      <div class="eyebrow">ADD PRODUCT</div>
+      <div class="panel mt-16" style="max-width:600px;">
+        <form onsubmit="event.preventDefault(); alert('Wire this up to your admin_bot.py / database.py insert route.');">
+          <div class="field">
+            <label>Type</label>
+            <select>
+              <option>Account (Blox Fruits + Evade + Rival)</option>
+              <option>Trade — MM2</option>
+              <option>Trade — Blade Ball</option>
+              <option>Trade — Gamepass / Fruit</option>
+            </select>
+          </div>
+          <div class="field"><label>Name</label><input type="text" placeholder="e.g. Chroma Seer" required></div>
+          <div class="field"><label>Description</label><textarea rows="3" placeholder="Short description shown on the product card"></textarea></div>
+          <div class="grid" style="grid-template-columns:1fr 1fr;">
+            <div class="field"><label>Price (USD)</label><input type="number" step="0.01" required></div>
+            <div class="field"><label>Stock quantity</label><input type="number" required></div>
+          </div>
+          <div class="field"><label>Warranty (days, accounts only)</label><input type="number" value="14"></div>
+          <div class="field"><label>Login / password (accounts only — delivered automatically)</label><input type="text" placeholder="login:password"></div>
+          <div class="field"><label>Product image</label><input type="file" accept="image/*"></div>
+          <button class="btn btn-amber btn-block" type="submit">Save & publish</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="coupons-view" class="admin-view">
+      <div class="flex between" style="flex-wrap:wrap; gap:12px;">
+        <div class="eyebrow">COUPONS</div>
+        <button class="btn btn-amber btn-sm" id="new-coupon-btn">+ New coupon</button>
+      </div>
+
+      <div class="panel mt-16" id="new-coupon-form" style="display:none; max-width:520px;">
+        <form onsubmit="event.preventDefault(); alert('Wire this up to a coupons table + admin_bot.py /addcoupon command.');">
+          <div class="grid" style="grid-template-columns:1fr 1fr;">
+            <div class="field"><label>Code</label><input type="text" placeholder="e.g. FRUIT20" style="text-transform:uppercase;" required></div>
+            <div class="field">
+              <label>Type</label>
+              <select><option value="percent">Percent off</option><option value="fixed">Fixed amount off</option></select>
+            </div>
+          </div>
+          <div class="grid" style="grid-template-columns:1fr 1fr;">
+            <div class="field"><label>Value</label><input type="number" placeholder="10" required></div>
+            <div class="field"><label>Max uses (blank = unlimited)</label><input type="number" placeholder="200"></div>
+          </div>
+          <div class="field"><label>Expires (optional)</label><input type="date"></div>
+          <button class="btn btn-amber btn-block" type="submit">Create coupon</button>
+        </form>
+      </div>
+
+      <div class="panel mt-16" style="padding:0;">
+        <table>
+          <thead><tr><th>Code</th><th>Discount</th><th>Used</th><th>Expires</th><th>Status</th><th></th></tr></thead>
+          <tbody id="coupons-table"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="visitors-view" class="admin-view">
+      <div class="eyebrow">VISITORS</div>
+      <div class="stat-grid mt-16">
+        <div class="stat-card"><div class="muted" style="font-size:12px;">Visitors today</div><div class="num" id="v-today">-</div></div>
+        <div class="stat-card"><div class="muted" style="font-size:12px;">Unique visitors today</div><div class="num" id="v-unique">-</div></div>
+        <div class="stat-card"><div class="muted" style="font-size:12px;">Telegram-referred</div><div class="num" id="v-tg">-</div></div>
+        <div class="stat-card"><div class="muted" style="font-size:12px;">Most viewed page</div><div class="num" style="font-size:16px; text-transform:none; font-family:var(--font-mono);" id="v-top">-</div></div>
+      </div>
+
+      <div class="panel mt-24">
+        <div class="eyebrow">LAST 7 DAYS</div>
+        <div class="flex gap-8" style="align-items:flex-end; height:140px; margin-top:20px;" id="week-chart"></div>
+      </div>
+
+      <div class="grid mt-24" style="grid-template-columns:1fr 1fr; gap:20px;">
+        <div class="panel">
+          <div class="eyebrow">TOP PAGES</div>
+          <table class="mt-16"><tbody id="top-pages-table"></tbody></table>
+        </div>
+        <div class="panel">
+          <div class="eyebrow">TRAFFIC SOURCES</div>
+          <div class="mt-16" id="sources-list"></div>
+        </div>
+      </div>
+      <p class="muted mt-16" style="font-size:12px;">This view expects a lightweight page-view log — e.g. an <span class="mono">analytics</span> table that <span class="mono">webapp_server.py</span> writes one row to on every page load (path, timestamp, referrer, telegram user id if opened from the Mini App).</p>
+    </div>
+
+    <div id="broadcast-view" class="admin-view">
+      <div class="eyebrow">BROADCAST</div>
+      <p class="muted mt-16" style="font-size:13px; max-width:560px;">Send an announcement to every user who has messaged the store bot. This mirrors the <span class="mono">/broadcast</span> command on the admin bot — using either sends to the same user list.</p>
+      <div class="panel mt-16" style="max-width:560px;">
+        <div class="field"><label>Audience</label>
+          <select>
+            <option>All users (store bot)</option>
+            <option>Users with at least 1 order</option>
+            <option>Users with an active warranty</option>
+          </select>
+        </div>
+        <div class="field"><label>Message</label><textarea rows="5" placeholder="e.g. New restock: Dragon Fruit x5, MM2 Chroma bundle back in stock. Tap Shop to grab one before it's gone."></textarea></div>
+        <div class="flex between center">
+          <span class="muted mono" style="font-size:12px;" id="audience-count">~0 recipients</span>
+          <button class="btn btn-amber" onclick="alert('Wire this up to admin_bot.py /broadcast — loops get_all_user_ids() and sends via bot.send_message with basic rate limiting.')">Send announcement</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="settings-view" class="admin-view">
+      <div class="eyebrow">BOT & PAYMENT</div>
+      <div class="grid" style="grid-template-columns:1fr 1fr; gap:20px; margin-top:16px;">
+        <div class="panel">
+          <h3 style="text-transform:none; font-size:15px;">Store bot</h3>
+          <p class="muted mt-8" style="font-size:13px;">Customer-facing bot. Handles browsing, checkout, and delivers order history in-chat.</p>
+          <div class="field mt-16"><label>Bot username</label><input type="text" value="UchiroStoreBot" readonly></div>
+        </div>
+        <div class="panel">
+          <h3 style="text-transform:none; font-size:15px;">Admin bot</h3>
+          <p class="muted mt-8" style="font-size:13px;">Owner-only. Add/edit stock, approve orders, release accounts, manage sellers.</p>
+          <div class="field mt-16"><label>Bot username</label><input type="text" value="UchiroAdminBot" readonly></div>
+        </div>
+        <div class="panel" style="grid-column:1/-1;">
+          <h3 style="text-transform:none; font-size:15px;">KHQR payment</h3>
+          <p class="muted mt-8" style="font-size:13px;">Connects to your KHQR provider so payments auto-confirm at checkout instead of needing a manual screenshot review.</p>
+          <div class="field mt-16"><label>KHQR API key</label><input type="password" placeholder="••••••••••••••••"></div>
+          <button class="btn btn-ghost btn-sm mt-8">Save connection</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="assets/data.js"></script>
+<script>
+function switchView(id){
+  document.querySelectorAll('.admin-view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.side-link').forEach(a=>a.classList.remove('active'));
+  const link = document.querySelector(`.side-link[data-view="${id}"]`);
+  if(link) link.classList.add('active');
+  document.getElementById('view-title').textContent = link ? link.textContent.replace(/^\S+\s/,'') : '';
+}
+document.querySelectorAll('.side-link').forEach(a=>{
+  a.addEventListener('click', e=>{ e.preventDefault(); switchView(a.dataset.view); });
+});
+
+document.getElementById('products-table').innerHTML = CATALOG.map(p=>`
+  <tr>
+    <td>${p.name}</td>
+    <td class="muted">${p.category}</td>
+    <td>${p.kind === 'account' ? '<span class="status-chip chip-approved">Account</span>' : '<span class="status-chip chip-pending">Trade</span>'}</td>
+    <td class="mono">$${p.price}</td>
+    <td class="mono">${p.stock}</td>
+    <td><button class="icon-btn">Edit</button></td>
+  </tr>`).join('');
+document.getElementById('stat-accounts').textContent = CATALOG.filter(p=>p.kind==='account').length;
+
+document.getElementById('release-all').addEventListener('click', ()=>{
+  alert('This should call your admin_bot.py release-all route, which delivers every approved-but-unsent account to its buyer and decrements stock.');
+});
+
+document.getElementById('new-coupon-btn').addEventListener('click', ()=>{
+  const f = document.getElementById('new-coupon-form');
+  f.style.display = f.style.display === 'none' ? 'block' : 'none';
+});
+
+function couponStatus(c){
+  const expired = c.expires && new Date(c.expires) < new Date();
+  const maxedOut = c.max_uses && c.uses >= c.max_uses;
+  if(!c.active) return '<span class="status-chip chip-out">Disabled</span>';
+  if(expired) return '<span class="status-chip chip-out">Expired</span>';
+  if(maxedOut) return '<span class="status-chip chip-out">Limit reached</span>';
+  return '<span class="status-chip chip-approved">Active</span>';
+}
+document.getElementById('coupons-table').innerHTML = COUPONS.map(c => `
+  <tr>
+    <td class="mono">${c.code}</td>
+    <td>${c.type === 'percent' ? c.value+'% off' : '$'+c.value+' off'}</td>
+    <td class="mono">${c.uses}${c.max_uses ? ' / '+c.max_uses : ''}</td>
+    <td class="muted">${c.expires || 'No expiry'}</td>
+    <td>${couponStatus(c)}</td>
+    <td><button class="icon-btn">${c.active ? 'Disable' : 'Enable'}</button></td>
+  </tr>`).join('');
+
+// ---- visitors ----
+document.getElementById('v-today').textContent = TRAFFIC.today_visitors;
+document.getElementById('v-unique').textContent = TRAFFIC.today_unique;
+document.getElementById('v-tg').textContent = TRAFFIC.sources.find(s=>s.name==='Telegram channel').pct + '%';
+document.getElementById('v-top').textContent = TRAFFIC.top_pages[0].path;
+
+const maxVisit = Math.max(...TRAFFIC.week_visitors);
+document.getElementById('week-chart').innerHTML = TRAFFIC.week_visitors.map((v,i)=>`
+  <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px;">
+    <div style="width:100%; max-width:32px; height:${(v/maxVisit*100)}px; background:linear-gradient(180deg, var(--amber), var(--amber-dim)); border-radius:6px 6px 0 0;" title="${v} visitors"></div>
+    <span class="muted mono" style="font-size:11px;">${TRAFFIC.week_labels[i]}</span>
+  </div>`).join('');
+
+document.getElementById('top-pages-table').innerHTML = TRAFFIC.top_pages.map(p=>`
+  <tr><td class="mono" style="font-size:12px;">${p.path}</td><td class="mono" style="text-align:right; font-size:12px;">${p.views}</td></tr>`).join('');
+
+document.getElementById('sources-list').innerHTML = TRAFFIC.sources.map(s=>`
+  <div class="mt-8">
+    <div class="flex between" style="font-size:12px;"><span class="muted">${s.name}</span><span class="mono">${s.pct}%</span></div>
+    <div class="bar mt-8" style="background:var(--surface-2);"><div class="bar-fill" style="width:${s.pct}%;"></div></div>
+  </div>`).join('');
+
+document.getElementById('audience-count').textContent = '~482 recipients';
+</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Products — Uchiro Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand"><span class="mark">U</span> UCHIRO STORE</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="products.html" class="active">Products</a></li>
+      <li><a href="orders.html">Order history</a></li>
+      <li><a href="help.html">Help</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="login.html" class="btn btn-ghost btn-sm">Login</a>
+      <button class="menu-toggle">☰</button>
+    </div>
+  </div>
+</nav>
+
+<header style="padding:56px 0 20px;">
+  <div class="wrap">
+    <div class="eyebrow">CATALOG</div>
+    <h1 style="font-size:clamp(34px,5vw,54px); margin-top:10px;">Every account & trade item</h1>
+    <p class="muted mt-8" style="max-width:520px;">Stock updates live from the admin bot. Accounts show a fixed warranty badge; trade items show live stock count.</p>
+  </div>
+</header>
+
+<section style="padding-top:0;">
+  <div class="wrap">
+    <div class="flex gap-12" style="flex-wrap:wrap; margin-bottom:28px;">
+      <button class="btn btn-ghost btn-sm filter-btn active" data-filter="all">All</button>
+      <button class="btn btn-ghost btn-sm filter-btn" data-filter="account">Accounts</button>
+      <button class="btn btn-ghost btn-sm filter-btn" data-filter="trade">Trade items</button>
+      <div style="flex:1; min-width:180px;">
+        <input id="search" type="text" placeholder="Search products…" style="width:100%; background:var(--surface-2); border:1px solid var(--line); border-radius:999px; padding:11px 18px; color:var(--ivory); outline:none;">
+      </div>
+    </div>
+    <div class="grid grid-3" id="catalog-grid"></div>
+  </div>
+</section>
+
+<footer data-footer></footer>
+
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+<script>
+let activeFilter = 'all';
+let query = '';
+
+function cardHTML(p){
+  const badge = p.kind === 'account' ? `<span class="badge badge-account">Account · ${p.warranty_days}d warranty</span>` : `<span class="badge badge-trade">Trade</span>`;
+  const stock = p.kind === 'account' ? '' : `<span class="badge-stock">${p.stock} in stock</span>`;
+  return `
+  <div class="card">
+    <div class="card-media">${badge}${stock}${p.category}</div>
+    <div class="card-body">
+      <h3>${p.name}</h3>
+      <div class="desc">${p.desc}</div>
+      <div class="pill-row">${p.tags.map(t=>`<span class="pill">${t}</span>`).join('')}</div>
+      <div class="card-foot">
+        <div class="price">$${p.price}<small> USD</small></div>
+        <a href="checkout.html?item=${p.id}" class="btn btn-amber btn-sm">Buy now</a>
+      </div>
+    </div>
+  </div>`;
+}
+
+function render(){
+  const grid = document.getElementById('catalog-grid');
+  const items = CATALOG.filter(p=>{
+    const matchFilter = activeFilter === 'all' || p.kind === activeFilter;
+    const matchQuery = (p.name+p.category+p.tags.join(' ')).toLowerCase().includes(query.toLowerCase());
+    return matchFilter && matchQuery;
+  });
+  grid.innerHTML = items.length ? items.map(cardHTML).join('') :
+    `<div class="panel" style="grid-column:1/-1; text-align:center; color:var(--slate);">No products match that search. Try another keyword or <a href="${STORE_INFO.telegramAccount}" target="_blank" style="color:var(--amber);">ask the admin</a>.</div>`;
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    render();
+  });
+});
+document.getElementById('search').addEventListener('input', e=>{
+  query = e.target.value;
+  render();
+});
+
+// deep-link #account / #trade from other pages
+if(location.hash === '#account'){ activeFilter='account'; }
+if(location.hash === '#trade'){ activeFilter='trade'; }
+render();
+</script>
+</body>
+</html>
